@@ -34,7 +34,7 @@ public class ShoppingController {
     private final StylingApi stylingApi;
 
     ShoppingController() {
-        String stylingUrl = "http://localhost:50051";
+        String stylingUrl = "http://styling:50051";
         WavefrontJaxrsClientFilter wavefrontJaxrsFilter = null;
         // wavefrontJaxrsFilter = wfJaxrsClientFilter;
         this.stylingApi = BeachShirtsUtils.createProxyClient(stylingUrl, StylingApi.class, wavefrontJaxrsFilter);

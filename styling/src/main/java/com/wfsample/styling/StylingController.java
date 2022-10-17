@@ -31,7 +31,7 @@ public class StylingController implements StylingApi {
     private final List<ShirtStyleDTO> shirtStyleDTOS;
 
     StylingController() {
-        String deliveryUrl = "http://localhost:50052";
+        String deliveryUrl = "http://delivery:50051";
         WavefrontJaxrsClientFilter wavefrontJaxrsFilter = null;
         // wavefrontJaxrsFilter = wfJaxrsClientFilter;
         this.deliveryApi = BeachShirtsUtils.createProxyClient(deliveryUrl, DeliveryApi.class, wavefrontJaxrsFilter);

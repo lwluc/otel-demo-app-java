@@ -1,0 +1,59 @@
+version: "3.9"
+services:
+
+  shopping:
+    image: docker.io/lwluc/apm-demo-app-shopping:1.0.0
+    container_name: shopping
+    environment:
+      - OTEL_SERVICE_NAME=shopping
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_METRICS_EXPORTER=none
+    ports:
+      - 50050:50050
+
+  styling:
+    image: docker.io/lwluc/apm-demo-app-styling:1.0.0
+    container_name: styling
+    environment:
+      - OTEL_SERVICE_NAME=styling
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_METRICS_EXPORTER=none
+    entrypoint: ["sh", "-c","
+        ./dockerize -wait=tcp://shopping:50050 -timeout=360s -- &&
+        java -jar -javaagent:./opentelemetry-javaagent.jar app.jar"]
+    ports:
+      - 50051:50051
+
+  delivery:
+    image: docker.io/lwluc/apm-demo-app-delivery:1.0.0
+    container_name: delivery
+    environment:
+      - OTEL_SERVICE_NAME=delivery
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_METRICS_EXPORTER=none
+    entrypoint: ["sh", "-c","
+        ./dockerize -wait=tcp://styling:50051 -timeout=360s -- &&
+        java -jar -javaagent:./opentelemetry-javaagent.jar app.jar"]
+    ports:
+      - 50052:50052
+
+  otel-collector:
+    image: otel/opentelemetry-collector
+    container_name: otel-collector
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "13133:13133" # health_check extension
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP http receiver
+    depends_on:
+      - jaeger-all-in-one
+
+  jaeger-all-in-one:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger-all-in-one
+    ports:
+      - 16686:16686
+      - 14268
+      - 14250
