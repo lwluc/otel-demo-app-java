@@ -8,11 +8,7 @@ import com.wfsample.service.StylingApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -65,5 +61,11 @@ public class ShoppingController {
             logger.warn(msg);
             return Response.status(deliveryResponse.getStatus()).entity(msg).build();
         }
+    }
+
+    @OPTIONS
+    @Path("/order")
+    public Response options() {
+        return Response.ok().build();
     }
 }

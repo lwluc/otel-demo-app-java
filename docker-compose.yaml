@@ -2,14 +2,22 @@ version: "3.9"
 services:
 
   shopping:
-    image: docker.io/lwluc/apm-demo-app-shopping:1.0.0
+    image: docker.io/lwluc/apm-demo-app-shopping:1.0.1
     container_name: shopping
     environment:
       - OTEL_SERVICE_NAME=shopping
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
       - OTEL_METRICS_EXPORTER=none
     ports:
-      - 50050:50050
+      - "50050:50050"
+
+  shopping-fe:
+    image: docker.io/lwluc/apm-demo-app-shopping-fe:1.0.0
+    container_name: shopping-fe
+    build: ./shopping-fe
+    restart: always
+    ports:
+      - "50049:8080"
 
   styling:
     image: docker.io/lwluc/apm-demo-app-styling:1.0.0
@@ -22,7 +30,7 @@ services:
         ./dockerize -wait=tcp://shopping:50050 -timeout=360s -- &&
         java -jar -javaagent:./opentelemetry-javaagent.jar app.jar"]
     ports:
-      - 50051:50051
+      - "50051:50051"
 
   delivery:
     image: docker.io/lwluc/apm-demo-app-delivery:1.0.0
@@ -35,7 +43,7 @@ services:
         ./dockerize -wait=tcp://styling:50051 -timeout=360s -- &&
         java -jar -javaagent:./opentelemetry-javaagent.jar app.jar"]
     ports:
-      - 50052:50052
+      - "50052:50052"
 
   otel-collector:
     image: otel/opentelemetry-collector
@@ -54,6 +62,6 @@ services:
     image: jaegertracing/all-in-one:latest
     container_name: jaeger-all-in-one
     ports:
-      - 16686:16686
-      - 14268
-      - 14250
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
