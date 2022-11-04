@@ -1,7 +1,10 @@
 async function submitForm(e, form) {
     e.preventDefault();
     const jsonFormData = buildJsonFormData(form);
-    const responseStatus = await performPostHttpRequest('http://localhost:50050/shop/order', jsonFormData);
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    const url = `http://localhost:50050/shop/order?${urlSearchParams.toString()}`;
+    const responseStatus = await performPostHttpRequest(url, jsonFormData);
     if (responseStatus < 200 || responseStatus > 299) {
         alert(`An error occured.`);
     }
