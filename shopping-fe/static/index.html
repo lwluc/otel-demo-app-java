@@ -4,26 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order</title>
-</head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"></head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        #snackbar {
+            visibility: hidden;
+        }
+
+        #snackbar.show {
+            visibility: visible;
+        }
+    </style>
 <body>
-<form action="" id="orderForm">
-    <h1>Order</h1>
-    <div>
-        <label for="styleName">Name: </label>
-        <input type="text" id="styleName" name="styleName">
+<section class="section">
+    <div class="container box" style="width: 400px">
+        <h1 class="title">Order</h1>
+        <form action="" id="orderForm">
+            <div class="field">
+                <label class="label">Name</label>
+                <div class="control">
+                    <input class="input" type="text" placeholder="T-Shirt" id="styleName" name="styleName">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Name</label>
+                <div class="control">
+                    <input class="input" type="number" placeholder="12" id="quantity" name="quantity">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" id="btnSubmit" class="button is-primary">
+                    Submit
+                </button>
+            </div>
+        </form>
     </div>
-    <br>
-    <div>
-        <label for="quantity">Quantity: </label>
-        <input type="number" id="quantity" name="quantity">
-    </div>
-    <br>
-    <div>
-        <button type="submit" id="btnSubmit">
-            Submit
-        </button>
-    </div>
-</form>
+</section>
 <script src="js/app.js"></script>
+<div id="snackbar" class="notification"></div>
 </body>
 </html>

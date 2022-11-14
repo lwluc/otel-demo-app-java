@@ -6,7 +6,9 @@ async function submitForm(e, form) {
     const url = `http://localhost:50050/shop/order?${urlSearchParams.toString()}`;
     const responseStatus = await performPostHttpRequest(url, jsonFormData);
     if (responseStatus < 200 || responseStatus > 299) {
-        alert(`An error occured.`);
+        showNotification('An error occurred.', 'is-danger');
+    } else {
+        showNotification('Order is placed', 'is-primary');
     }
 }
 
@@ -33,6 +35,20 @@ async function performPostHttpRequest(fetchLink, body) {
         console.error(`Error at fetch POST: ${err}`);
         throw err;
     }
+}
+
+function showNotification(text, typeClass) {
+  const element = document.getElementById('snackbar');
+  const msgEl = document.createTextNode(text);
+  element.appendChild(msgEl);
+
+  element.classList.add('show');
+  element.classList.add(typeClass);
+
+  setTimeout(function() {
+    element.className = element.className.replace('show', '');
+    element.removeChild(msgEl);
+    }, 1500);
 }
 
 const orderForm = document.querySelector('#orderForm');
