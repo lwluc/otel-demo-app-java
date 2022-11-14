@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.stream.Collectors.toList;
 
@@ -31,7 +30,7 @@ public class StylingController implements StylingApi {
     private final List<ShirtStyleDTO> shirtStyleDTOS;
 
     StylingController() {
-        String deliveryUrl = "http://delivery:50051";
+        String deliveryUrl = "http://delivery:50052";
         WavefrontJaxrsClientFilter wavefrontJaxrsFilter = null;
         // wavefrontJaxrsFilter = wfJaxrsClientFilter;
         this.deliveryApi = BeachShirtsUtils.createProxyClient(deliveryUrl, DeliveryApi.class, wavefrontJaxrsFilter);
@@ -58,11 +57,6 @@ public class StylingController implements StylingApi {
          * statistical functions (median, mean, min, max, p95, p99 etc.) on that data is really useful
          * to understand the user trend.
          */
-        if (ThreadLocalRandom.current().nextInt(0, 5) == 0) {
-            String msg = "Failed to make shirts!";
-            logger.warn(msg);
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(msg).build();
-        }
         String orderNum = UUID.randomUUID().toString();
         List<ShirtDTO> packedShirts = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {

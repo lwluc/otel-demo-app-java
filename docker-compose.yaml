@@ -12,36 +12,39 @@ services:
       - "50050:50050"
 
   shopping-fe:
-    image: docker.io/lwluc/apm-demo-app-shopping-fe:1.0.0
+    image: docker.io/lwluc/apm-demo-app-shopping-fe:1.1.0
     container_name: shopping-fe
-    build: ./shopping-fe
     restart: always
     ports:
       - "50049:8080"
 
   styling:
-    image: docker.io/lwluc/apm-demo-app-styling:1.0.0
+    image: docker.io/lwluc/apm-demo-app-styling:1.0.1
     container_name: styling
     environment:
       - OTEL_SERVICE_NAME=styling
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
       - OTEL_METRICS_EXPORTER=none
-    entrypoint: ["sh", "-c","
+    depends_on:
+      - shopping
+    entrypoint: [ "sh", "-c","
         ./dockerize -wait=tcp://shopping:50050 -timeout=360s -- &&
-        java -jar -javaagent:./opentelemetry-javaagent.jar app.jar"]
+        java -jar -javaagent:./opentelemetry-javaagent.jar app.jar" ]
     ports:
       - "50051:50051"
 
   delivery:
-    image: docker.io/lwluc/apm-demo-app-delivery:1.0.0
+    image: docker.io/lwluc/apm-demo-app-delivery:1.0.1
     container_name: delivery
     environment:
       - OTEL_SERVICE_NAME=delivery
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
       - OTEL_METRICS_EXPORTER=none
-    entrypoint: ["sh", "-c","
+    depends_on:
+      - styling
+    entrypoint: [ "sh", "-c","
         ./dockerize -wait=tcp://styling:50051 -timeout=360s -- &&
-        java -jar -javaagent:./opentelemetry-javaagent.jar app.jar"]
+        java -jar -javaagent:./opentelemetry-javaagent.jar app.jar" ]
     ports:
       - "50052:50052"
 

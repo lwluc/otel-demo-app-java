@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Controller for delivery service which is responsible for dispatching shirts returning tracking
@@ -35,11 +34,6 @@ public class DeliveryController implements DeliveryApi {
 
     @Override
     public Response dispatch(String orderNum, PackedShirtsDTO packedShirts) {
-        if (ThreadLocalRandom.current().nextInt(0, 5) == 0) {
-            String msg = "Failed to dispatch shirts!";
-            logger.warn(msg);
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(msg).build();
-        }
         if (orderNum.isEmpty()) {
             /*
              * TODO: Try to emitting an error metrics with relevant ApplicationTags to Wavefront.

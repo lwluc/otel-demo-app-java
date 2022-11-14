@@ -13,7 +13,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -46,11 +45,6 @@ public class ShoppingController {
     @Path("/order")
     @Consumes(APPLICATION_JSON)
     public Response orderShirts(OrderDTO orderDTO, @Context HttpHeaders httpHeaders) {
-        if (ThreadLocalRandom.current().nextInt(0, 10) == 0) {
-            String msg = "Failed to order shirts!";
-            logger.warn(msg);
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(msg).build();
-        }
         Response deliveryResponse = stylingApi.makeShirts(
                 orderDTO.getStyleName(), orderDTO.getQuantity());
         if (deliveryResponse.getStatus() < 400) {
